@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>登入 — 統一認證入口</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+  <!-- If already logged in and no redirect, go to dashboard -->
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    if (localStorage.getItem('token') && !params.get('redirect')) {
+      window.location.href = '/dashboard.html';
+    }
+  </script>
+
+  <div class="card">
+    <h1>👋 歡迎回來</h1>
+    <p class="subtitle">登入你的帳號</p>
+
+    <div id="msg" class="message"></div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="username">用戶名</label>
+        <input type="text" id="username" placeholder="輸入用戶名" autocomplete="username" required />
+      </div>
+      <div class="form-group">
+        <label for="password">密碼</label>
+        <input type="password" id="password" placeholder="輸入密碼" autocomplete="current-password" required />
+      </div>
+      <button type="submit" class="btn btn-primary">登入</button>
+    </form>
+
+    <div class="link-row">
+      還沒有帳號？<a href="/register.html" id="registerLink">註冊</a>
+    </div>
+    <div class="link-row">
+      <a href="/forgot-password.html">忘記密碼？</a>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    // Preserve redirect param on register link
+    (function() {
+      const redirectUrl = getRedirectUrl();
+      if (redirectUrl) {
+        const registerLink = document.getElementById('registerLink');
+        if (registerLink) {
+          registerLink.href = '/register.html?redirect=' + encodeURIComponent(redirectUrl);
+        }
+      }
+    })();
+
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      login(
+        document.getElementById("username").value.trim(),
+        document.getElementById("password").value
+      );
+    });
+  </script>
+</body>
+</html>

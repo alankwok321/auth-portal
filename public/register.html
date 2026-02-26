@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>註冊 — 統一認證入口</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="card">
+    <h1>✨ 建立帳號</h1>
+    <p class="subtitle">快速註冊，馬上開始</p>
+
+    <div id="msg" class="message"></div>
+
+    <form id="registerForm">
+      <div class="form-group">
+        <label for="username">用戶名</label>
+        <input type="text" id="username" placeholder="至少 3 個字元" autocomplete="username" required />
+      </div>
+      <div class="form-group">
+        <label for="password">密碼</label>
+        <input type="password" id="password" placeholder="至少 6 個字元" autocomplete="new-password" required />
+      </div>
+      <div class="form-group">
+        <label for="password2">確認密碼</label>
+        <input type="password" id="password2" placeholder="再次輸入密碼" autocomplete="new-password" required />
+      </div>
+      <div class="form-group">
+        <label for="securityQuestion">安全問題</label>
+        <select id="securityQuestion" required>
+          <option value="">— 請選擇安全問題 —</option>
+          <option value="你的寵物叫什麼名字？">你的寵物叫什麼名字？</option>
+          <option value="你最喜歡的食物是什麼？">你最喜歡的食物是什麼？</option>
+          <option value="你的出生城市是哪裡？">你的出生城市是哪裡？</option>
+          <option value="你最喜歡的電影是什麼？">你最喜歡的電影是什麼？</option>
+          <option value="你小學的名稱是什麼？">你小學的名稱是什麼？</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="securityAnswer">安全問題答案</label>
+        <input type="text" id="securityAnswer" placeholder="輸入你的答案" required />
+      </div>
+      <button type="submit" class="btn btn-primary">註冊</button>
+    </form>
+
+    <div class="link-row">
+      已有帳號？<a href="/" id="loginLink">登入</a>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    // Preserve redirect param on login link
+    (function() {
+      const redirectUrl = getRedirectUrl();
+      if (redirectUrl) {
+        const loginLink = document.getElementById('loginLink');
+        if (loginLink) {
+          loginLink.href = '/?redirect=' + encodeURIComponent(redirectUrl);
+        }
+      }
+    })();
+
+    document.getElementById("registerForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      register(
+        document.getElementById("username").value.trim(),
+        document.getElementById("password").value,
+        document.getElementById("password2").value,
+        document.getElementById("securityQuestion").value,
+        document.getElementById("securityAnswer").value.trim()
+      );
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>儀表板 — 統一認證入口</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="dashboard-page">
+
+  <!-- Auth Guard -->
+  <script>
+    if (!localStorage.getItem('token')) {
+      window.location.href = '/';
+    }
+  </script>
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="logo">🎓 教育應用平台</span>
+    </div>
+    <div class="topbar-right">
+      <a href="/settings.html" class="btn-settings-link">⚙️ API 設定</a>
+      <span class="user-badge" id="userBadge"></span>
+      <button class="btn-logout" onclick="logout()">登出</button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="dashboard-container">
+    <section class="dashboard-panel">
+      <h2>📚 我的應用程式</h2>
+      <div class="app-grid">
+        <a href="https://login-app-liard.vercel.app" class="app-card" target="_blank" rel="noopener">
+          <span class="app-icon">🎨</span>
+          <span class="app-name">AI 圖片生成器</span>
+          <span class="app-desc">使用 AI 生成精美圖片</span>
+        </a>
+        <a href="#" class="app-card" onclick="alert('即將推出！'); return false;">
+          <span class="app-icon">📝</span>
+          <span class="app-name">AI 作文助手</span>
+          <span class="app-desc">AI 輔助寫作練習</span>
+        </a>
+        <a href="#" class="app-card" onclick="alert('即將推出！'); return false;">
+          <span class="app-icon">📖</span>
+          <span class="app-name">AI 閱讀理解</span>
+          <span class="app-desc">智能閱讀理解訓練</span>
+        </a>
+        <a href="#" class="app-card" onclick="alert('即將推出！'); return false;">
+          <span class="app-icon">🧮</span>
+          <span class="app-name">AI 數學練習</span>
+          <span class="app-desc">個性化數學練習題</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="dashboard-panel">
+      <h2>ℹ️ 關於</h2>
+      <p style="color: var(--d-text-muted); font-size: 0.9rem; line-height: 1.6;">
+        這是統一認證入口，管理你所有教育應用程式的帳號和 API 設定。<br>
+        登入一次即可存取所有應用程式。前往 <a href="/settings.html" style="color: var(--d-accent);">API 設定</a> 管理你的 API 金鑰。
+      </p>
+    </section>
+  </main>
+
+  <script src="/js/app.js"></script>
+  <script>
+    checkAuth();
+  </script>
+</body>
+</html>

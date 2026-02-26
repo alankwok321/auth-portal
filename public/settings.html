@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API 設定 — 統一認證入口</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="dashboard-page">
+
+  <!-- Auth Guard -->
+  <script>
+    if (!localStorage.getItem('token')) {
+      window.location.href = '/';
+    }
+  </script>
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <a href="/dashboard.html" class="topbar-back">← 返回</a>
+      <span class="logo">⚙️ API 設定</span>
+    </div>
+    <div class="topbar-right">
+      <span class="user-badge" id="userBadge"></span>
+      <button class="btn-logout" onclick="logout()">登出</button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="settings-container">
+    <section class="settings-panel">
+      <h2>🔑 API Key 管理</h2>
+      <p class="settings-desc">設定你的 OpenAI 相容 API 金鑰。你的金鑰會安全地儲存在資料庫中，所有關聯的應用程式都可使用。</p>
+
+      <!-- Status Badge -->
+      <div class="settings-status" id="settingsStatus">
+        <span class="status-loading">載入中...</span>
+      </div>
+
+      <!-- Settings Form -->
+      <form id="settingsForm" onsubmit="saveSettings(event)">
+        <div class="form-group">
+          <label for="apiMode">API 模式</label>
+          <select id="apiMode" onchange="updateApiModeHints()">
+            <option value="chat">Chat Completions（Gemini / 其他 chat 模型生成圖片）</option>
+            <option value="images">Images API（OpenAI DALL·E / 標準 images/generations）</option>
+          </select>
+          <small class="form-hint" id="modeHint">使用 chat/completions 端點，模型回傳包含圖片的回應</small>
+        </div>
+
+        <div class="form-group">
+          <label for="apiBaseUrl">API Base URL</label>
+          <input type="url" id="apiBaseUrl" placeholder="https://generativelanguage.googleapis.com/v1beta/openai" />
+          <small class="form-hint" id="baseUrlHint">留空則使用預設值 (Google Gemini API)</small>
+        </div>
+
+        <div class="form-group">
+          <label for="apiKey">API Key</label>
+          <div class="input-with-toggle">
+            <input type="password" id="apiKey" placeholder="輸入你的 API Key" />
+            <button type="button" class="toggle-visibility" onclick="toggleKeyVisibility()" title="顯示/隱藏">
+              <span id="eyeIcon">👁️</span>
+            </button>
+          </div>
+          <small class="form-hint" id="keyHint"></small>
+        </div>
+
+        <div class="form-group">
+          <label for="apiModel">預設模型</label>
+          <input type="text" id="apiModel" placeholder="gemini-3-pro-image-preview" />
+          <small class="form-hint" id="modelHint">圖片生成使用的模型名稱</small>
+        </div>
+
+        <div id="settingsMsg" class="settings-msg"></div>
+
+        <div class="settings-actions">
+          <button type="submit" class="btn btn-generate" id="saveBtn">
+            <span id="saveBtnText">💾 儲存設定</span>
+            <span id="saveBtnSpinner" class="spinner" style="display:none;"></span>
+          </button>
+          <button type="button" class="btn btn-small btn-test" onclick="testKey()" id="testBtn">
+            🧪 測試連線
+          </button>
+          <button type="button" class="btn btn-small btn-danger" onclick="deleteKey()" id="deleteBtn">
+            🗑️ 清除設定
+          </button>
+        </div>
+      </form>
+
+      <!-- Test Result -->
+      <div id="testResult" class="test-result" style="display:none;"></div>
+    </section>
+
+    <!-- Help Section -->
+    <section class="settings-panel settings-help">
+      <h3>📖 使用說明</h3>
+      <div class="help-content">
+        <div class="help-item">
+          <strong>1. 取得 API Key</strong>
+          <p>前往 <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> 建立你的 API Key。</p>
+        </div>
+        <div class="help-item">
+          <strong>2. 選擇 API 模式</strong>
+          <p><strong>Chat Completions</strong> — 適用於 Google Gemini、Claude 等透過 chat 回應生成圖片的模型。<br>
+          <strong>Images API</strong> — 適用於 OpenAI DALL·E 等使用標準 <code>/v1/images/generations</code> 端點的服務。</p>
+        </div>
+        <div class="help-item">
+          <strong>3. 設定 Base URL</strong>
+          <p>如果使用 Google Gemini API，可以留空（自動使用預設值）。如果使用 OpenAI，填入 <code>https://api.openai.com/v1</code>。</p>
+        </div>
+        <div class="help-item">
+          <strong>4. 選擇模型</strong>
+          <p>Chat 模式預設 <code>gemini-3-pro-image-preview</code>；Images 模式預設 <code>dall-e-3</code>。</p>
+        </div>
+        <div class="help-item">
+          <strong>5. 測試連線</strong>
+          <p>儲存後點擊「測試連線」確認 API Key 可正常使用。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/app.js"></script>
+  <script>
+    checkAuth();
+    loadSettings();
+  </script>
+</body>
+</html>
